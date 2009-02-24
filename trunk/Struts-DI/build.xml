@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="Struts-DI" default="build" basedir=".">
+
+	<property name="strutsdi.name" value="struts-di" />
+
+	<property name="src.dir" location="src" />
+	<property name="lib.dir" location="lib" />
+	<property name="build.dir" location="build" />
+	<property name="dist.dir" location="dist" />
+	<property name="build.java.version" value="1.5" />
+	<property name="release.number" value="0.1.0" />
+
+	<tstamp />
+	
+	<property name="strutsdi.libfile" location="${build.dir}/${strutsdi.name}-${DSTAMP}-${TSTAMP}.jar" />
+	<property name="strutsdi.classes" location="${build.dir}/classes" />
+	<property name="strutsdi.zipdir" location="${build.dir}/zip" />
+
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${strutsdi.classes}" />
+		<mkdir dir="${strutsdi.zipdir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="clean" description="">
+		<delete dir="${build.dir}" includeemptydirs="true" />
+		<delete dir="${dist.dir}" includeemptydirs="true" />
+	</target>
+
+	<target name="build" depends="clean,init" description="">
+		<javac srcdir="${src.dir}" destdir="${strutsdi.classes}" encoding="UTF-8" source="${build.java.version}" target="${build.java.version}" debug="true">
+			<compilerarg value="-Xlint:all,-path" />
+			<classpath refid="build.classpath" />
+		</javac>
+		<jar destfile="${strutsdi.libfile}" basedir="${strutsdi.classes}" />
+	</target>
+
+	<target name="release" depends="build" description="">
+		<copy file="${strutsdi.libfile}" tofile="${strutsdi.zipdir}/${strutsdi.name}-${release.number}.jar/" />
+		<copy toDir="${strutsdi.zipdir}" flatten="true">
+			<resources>
+				<file file="license.txt" />
+				<file file="readme.txt" />
+			</resources>
+		</copy>
+		<zip destfile="${dist.dir}/${strutsdi.name}-${release.number}.zip" basedir="${strutsdi.zipdir}" />
+	</target>
+
+</project>
