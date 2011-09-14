@@ -8,7 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionMapping;
 
-public class TilesRequestProcessor extends org.apache.struts.tiles.TilesRequestProcessor {
+import com.muchsoft.util.ServiceLocator;
+import com.muchsoft.util.naming.JndiNamingStrategy;
+
+public class TilesRequestProcessor extends
+		org.apache.struts.tiles.TilesRequestProcessor implements
+		InjectionProcessor {
 
 	@Override
 	protected Action processActionCreate(HttpServletRequest request,
@@ -26,12 +31,20 @@ public class TilesRequestProcessor extends org.apache.struts.tiles.TilesRequestP
 			instance = super.processActionCreate(request, response, mapping);
 
 			if (isNewInstance) {
-				InjectionHelper.injectEJB(instance, instance
-						.getClass());
+				InjectionHelper.injectEJB(instance, instance.getClass());
 			}
 		}
 
 		return instance;
 	}
 
+	public void setNamingStrategy(String namingStrategyClassName)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
+
+		JndiNamingStrategy namingStrategy = (JndiNamingStrategy) Class.forName(
+				namingStrategyClassName).newInstance();
+
+		ServiceLocator.setNamingStrategy(namingStrategy);
+	}
 }

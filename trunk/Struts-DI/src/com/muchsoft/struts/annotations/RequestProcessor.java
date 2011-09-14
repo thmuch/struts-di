@@ -8,7 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionMapping;
 
-public class RequestProcessor extends org.apache.struts.action.RequestProcessor {
+import com.muchsoft.util.ServiceLocator;
+import com.muchsoft.util.naming.JndiNamingStrategy;
+
+public class RequestProcessor extends org.apache.struts.action.RequestProcessor
+		implements InjectionProcessor {
 
 	@Override
 	protected Action processActionCreate(HttpServletRequest request,
@@ -26,12 +30,20 @@ public class RequestProcessor extends org.apache.struts.action.RequestProcessor 
 			instance = super.processActionCreate(request, response, mapping);
 
 			if (isNewInstance) {
-				InjectionHelper.injectEJB(instance, instance
-						.getClass());
+				InjectionHelper.injectEJB(instance, instance.getClass());
 			}
 		}
 
 		return instance;
 	}
 
+	public void setNamingStrategy(String namingStrategyClassName)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
+
+		JndiNamingStrategy namingStrategy = (JndiNamingStrategy) Class.forName(
+				namingStrategyClassName).newInstance();
+
+		ServiceLocator.setNamingStrategy(namingStrategy);
+	}
 }

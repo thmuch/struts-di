@@ -5,13 +5,15 @@ Using Struts-DI is easy:
    1. Include the libary jar file (or the separate class files) in your web application's class path (usually WEB-INF/lib or WEB-INF/classes).
    2. Activate one of Struts-DI's request processors in your WEB-INF/struts-config.xml:
 
-        <controller nocache="true"
-                    processorClass="com.muchsoft.struts.annotations.RequestProcessor" />
+        <controller nocache="true" processorClass="com.muchsoft.struts.annotations.RequestProcessor">
+            <set-property property="namingStrategy" value="com.muchsoft.util.naming.GlassFishNamingStrategy" />
+        </controller>
 
     Or, if you are using Tiles:
 
-      <controller nocache="true"
-                  processorClass="com.muchsoft.struts.annotations.TilesRequestProcessor" />
+      <controller nocache="true" processorClass="com.muchsoft.struts.annotations.TilesRequestProcessor">
+          <set-property property="namingStrategy" value="com.muchsoft.util.naming.GlassFishNamingStrategy" />
+      </controller>
 
 That's it :-)
 
@@ -30,13 +32,13 @@ public class MyAction extends org.apache.struts.action.Action {
   }
 }
 
-Currently, only Glassfish-style JNDI names are supported, i.e. the session beans must use their fully qualified interface name as their global JNDI name.
-
-Annotation attributes (like mappedName), setter injection and class annotation for local JNDI definitions are not supported yet, but that will definitely change in future versions of the library.
+Currently, only a GlassFish-style JNDI naming strategy is included. If your application server uses
+a different naming style, you can set the "name" attribute in each @EJB annotation. Alternatively,
+you can easily write your own implementation of com.muchsoft.util.naming.JndiNamingStrategy.
 
 
 Struts-DI is hosted at <http://code.google.com/p/struts-di/> where you can checkout the source code via Subversion.
 
 Struts-DI is released under the new BSD licens (see license.txt and <http://en.wikipedia.org/wiki/BSD_license>).
 
-Copyright (c)2009 Thomas Much, <mailto:thomas@muchsoft.com>
+Copyright (c)2009-2011 Thomas Much, <mailto:thomas@muchsoft.com>
