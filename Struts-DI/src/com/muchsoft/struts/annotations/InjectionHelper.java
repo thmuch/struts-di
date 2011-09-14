@@ -10,7 +10,7 @@ import com.muchsoft.util.ServiceLocator;
 
 class InjectionHelper {
 
-	static void injectEJB(Action instance, Class<?> cls) {
+	static void injectEJB(final Action instance, Class<?> cls) {
 
 		Field[] fields = cls.getDeclaredFields();
 
@@ -19,17 +19,17 @@ class InjectionHelper {
 			EJB ejbAnnotation = f.getAnnotation(EJB.class);
 
 			if (ejbAnnotation != null) {
-				// TODO: evaluate ejbAnnotation.mappedName etc.
 
 				Class<?> type = f.getType();
 
 				try {
-					Object ejb = ServiceLocator.getBean(type);
+					Object ejb = ServiceLocator.getBean(type, ejbAnnotation);
 					f.setAccessible(true);
 					f.set(instance, ejb);
 				} catch (Exception e) {
-					throw new RuntimeException(
-							"Failed to inject @EJB into Struts Action", e);
+					throw new RuntimeException("Failed to inject @EJB \""
+							+ type.getName() + "\" into Struts Action \""
+							+ instance.getClass().getName() + "\"", e);
 				}
 			}
 		}
@@ -40,5 +40,4 @@ class InjectionHelper {
 			injectEJB(instance, cls);
 		}
 	}
-
 }

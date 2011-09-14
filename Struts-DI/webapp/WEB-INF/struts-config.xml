@@ -8,7 +8,11 @@
 	<!-- ... -->
 
 	<controller nocache="true"
-		processorClass="com.muchsoft.struts.annotations.RequestProcessor" />
+		processorClass="com.muchsoft.struts.annotations.RequestProcessor">
+
+		<set-property property="namingStrategy"
+		              value="com.muchsoft.util.naming.GlassFishNamingStrategy" />
+	</controller>
 
 	<!-- ... -->
 
